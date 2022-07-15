@@ -18,6 +18,7 @@ def increasingTriplet(nums):
                     item[1] = num
 
                 if len(item) == 3:
+                    print(item)
                     return True
     return False
 
