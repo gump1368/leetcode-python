@@ -11,31 +11,56 @@ def searchMatrix(matrix, target):
     if not matrix:
         return False
 
-    def bin_search(row_low, row_high, col_low, col_high):
-        mid_row = (row_low + row_high) // 2
-        mid_col = (col_low + col_high) // 2
-
-        if row_low < row_high and col_low < col_high:
-            if matrix[mid_row][mid_col] > target:
-                return True if bin_search(row_low, mid_row-1, col_low, col_high) else bin_search(row_low, row_high, col_low, mid_col-1)
+    def bin_search(arrs, low, high):
+        if not row[0] <= target <= row[-1] or not arrs:
+            return False, None
+        mid = (low + high) // 2
+        if low < high:
+            if arrs[mid] < target:
+                return bin_search(arrs, mid+1, high)
             else:
-                return True if bin_search(mid_row+1, row_high, col_low, col_high) else bin_search(row_low, row_high, mid_col+1, col_high)
+                return bin_search(arrs, low, mid)
+        if arrs[mid] == target:
+            return True, mid
+        return False, mid
 
-        if matrix[mid_row][mid_col] == target:
+    for i, row in enumerate(matrix):
+        flag, index = bin_search(row, 0, len(row)-1)
+        if flag:
+            return True
+        if not index:
+            continue
+        col_rows = [_row[index] for _row in matrix[i+1:]]
+        flag, index = bin_search(col_rows, 0, len(col_rows)-1)
+        if flag:
             return True
 
-        return False
+    return False
 
-    return bin_search(0, len(matrix)-1, 0, len(matrix[0])-1)
+
+
+
+
+    # def bin_search(row_low, row_high, col_low, col_high):
+    #     mid_row = (row_low + row_high) // 2
+    #     mid_col = (col_low + col_high) // 2
+    #
+    #     if row_low < row_high and col_low < col_high:
+    #         if matrix[mid_row][mid_col] > target:
+    #             return True if bin_search(row_low, mid_row-1, col_low, col_high) else bin_search(row_low, row_high, col_low, mid_col-1)
+    #         else:
+    #             return True if bin_search(mid_row+1, row_high, col_low, col_high) else bin_search(row_low, row_high, mid_col+1, col_high)
+    #
+    #     if matrix[mid_row][mid_col] == target:
+    #         return True
+    #
+    #     return False
+
+    # return bin_search(0, len(matrix)-1, 0, len(matrix[0])-1)
 
 
 if __name__ == '__main__':
-    test_input = [[3,3,8,13,13,18],
-                  [4,5,11,13,18,20],
-                  [9,9,14,15,23,23],
-                  [13,18,22,22,25,27],
-                  [18,22,23,28,30,33],
-                  [21,25,28,30,35,35],
-                  [24,25,33,36,37,40]]
-    test_input1 = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]
-    print(searchMatrix(test_input1, 5))
+    test_input = [[1,4,7,11,15],
+                  [2,5,8,12,19],
+                  [3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]
+    print(searchMatrix(test_input, 20))
